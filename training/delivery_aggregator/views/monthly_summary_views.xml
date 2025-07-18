@@ -1,0 +1,136 @@
+<odoo>
+    <!-- List View -->
+    <record id="view_monthly_summary_list" model="ir.ui.view">
+        <field name="name">monthly.summary.list</field>
+        <field name="model">monthly.summary</field>
+        <field name="arch" type="xml">
+            <list string="Monthly Summaries">
+                <field name="name"/>
+                <field name="month"/>
+                <field name="year"/>
+                <field name="total_orders"/>
+                <field name="total_amount"/>
+                <field name="top_customer_id"/>
+                <field name="summary_date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_monthly_summary_search" model="ir.ui.view">
+        <field name="name">monthly.summary.search</field>
+        <field name="model">monthly.summary</field>
+        <field name="arch" type="xml">
+            <search string="Search Monthly Summaries">
+                <field name="name"/>
+                <field name="month"/>
+                <field name="year"/>
+                <field name="top_customer_id"/>
+                <field name="summary_date"/>
+                <field name="state"/>
+                
+                <!-- Filters -->
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Processed" name="processed" domain="[('state', '=', 'processed')]"/>
+                
+                <!-- Month Filters -->
+                <separator/>
+                <filter string="January" name="january" domain="[('month', '=', 'january')]"/>
+                <filter string="February" name="february" domain="[('month', '=', 'february')]"/>
+                <filter string="March" name="march" domain="[('month', '=', 'march')]"/>
+                <filter string="April" name="april" domain="[('month', '=', 'april')]"/>
+                <filter string="May" name="may" domain="[('month', '=', 'may')]"/>
+                <filter string="June" name="june" domain="[('month', '=', 'june')]"/>
+                <filter string="July" name="july" domain="[('month', '=', 'july')]"/>
+                <filter string="August" name="august" domain="[('month', '=', 'august')]"/>
+                <filter string="September" name="september" domain="[('month', '=', 'september')]"/>
+                <filter string="October" name="october" domain="[('month', '=', 'october')]"/>
+                <filter string="November" name="november" domain="[('month', '=', 'november')]"/>
+                <filter string="December" name="december" domain="[('month', '=', 'december')]"/>
+                
+                <!-- Year Filters -->
+                <separator/>
+                <filter string="Current Year" name="current_year" domain="[('year', '=', context_today().year)]"/>
+                <filter string="Last Year" name="last_year" domain="[('year', '=', context_today().year - 1)]"/>
+                <filter string="This Month" name="this_month" domain="[('month', '=', context_today().strftime('%B').lower()), ('year', '=', context_today().year)]"/>
+                
+                <!-- Group By -->
+                <group expand="0" string="Group By">
+                    <filter string="Month" name="group_month" context="{'group_by': 'month'}"/>
+                    <filter string="Year" name="group_year" context="{'group_by': 'year'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Top Customer" name="group_customer" context="{'group_by': 'top_customer_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_monthly_summary_form" model="ir.ui.view">
+        <field name="name">monthly.summary.form</field>
+        <field name="model">monthly.summary</field>
+        <field name="arch" type="xml">
+            <form string="Monthly Summary">
+                <header>
+                    <button name="action_confirm" invisible="state != 'draft'" string="Confirm" type="object" class="oe_highlight"/>
+                    <button name="action_processed" invisible="state != 'confirmed'" string="Processed" type="object" class="oe_highlight"/>
+                    <button name="action_refresh_orders" string="Refresh Orders" type="object" class="oe_secondary" invisible="state == 'draft' and not id"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,processed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" placeholder="Enter monthly summary name, example: 'July 2025 Summary'"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="month" placeholder="Select month"/>
+                            <field name="year"/>
+                            <field name="date_range" readonly="1"/>
+                            <field name="summary_date"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="total_orders"/>
+                            <field name="total_amount"/>
+                            <field name="average_order_value"/>
+                            <field name="top_customer_id"/>
+                            <field name="delivered_orders"/>
+                            <field name="confirmed_orders"/>
+                        </group>
+                    </group>
+                    
+                    <!--delivery order tree view-->
+                    <notebook>
+                        <page string="Delivery Orders">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Info:</strong> Delivery orders are automatically filtered based on the selected month and year.
+                            </div>
+                            <field name="delivery_order_ids" widget="tree" options="{'group_by': 'customer_id'}" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_monthly_summary" model="ir.actions.act_window">
+        <field name="name">Monthly Summaries</field>
+        <field name="res_model">monthly.summary</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             Create your first monthly summary!
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_monthly_summary"
+              name="Monthly Summaries"
+              parent="menu_delivery_aggregator"
+              action="action_monthly_summary"
+              sequence="20"/>
+</odoo>

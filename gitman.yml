@@ -2,7 +2,7 @@ location: source
 sources:
   - repo: https://github.com/odoo/odoo
     name: odoo
-    rev: 17.0
+    rev: 18.0
 
   # 3rd party addon repos...
   # - repo: https://github.com/OCA/project

@@ -1,0 +1,108 @@
+<odoo>
+    <!-- List View -->
+    <record id="view_delivery_order_list" model="ir.ui.view">
+        <field name="name">delivery.order.list</field>
+        <field name="model">delivery.order</field>
+        <field name="arch" type="xml">
+            <list string="Delivery Orders">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="delivery_date"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="unit_price"/>
+                <field name="total_amount"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_delivery_order_search" model="ir.ui.view">
+        <field name="name">delivery.order.search</field>
+        <field name="model">delivery.order</field>
+        <field name="arch" type="xml">
+            <search string="Search Delivery Orders">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="delivery_date"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="total_amount"/>
+                <field name="state"/>
+                
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Delivered" name="delivered" domain="[('state', '=', 'delivered')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Delivery Date" name="group_date" context="{'group_by': 'delivery_date'}"/>
+                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_delivery_order_form" model="ir.ui.view">
+        <field name="name">delivery.order.form</field>
+        <field name="model">delivery.order</field>
+        <field name="arch" type="xml">
+            <form string="Delivery Order">
+                <header>
+                    <button name="action_confirm" invisible="state != 'draft'" string="Confirm" type="object" class="oe_highlight"/>
+                    <button name="action_deliver" invisible="state != 'confirmed'" string="Mark as Delivered" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,delivered"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" placeholder="Enter delivery order name..."/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="delivery_date"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="total_amount" widget="monetary"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_delivery_order" model="ir.actions.act_window">
+        <field name="name">Delivery Orders</field>
+        <field name="res_model">delivery.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first delivery order!
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_delivery_aggregator"
+              name="Delivery Management"
+              sequence="100"/>
+
+    <menuitem id="menu_delivery_order"
+              name="Delivery Orders"
+              parent="menu_delivery_aggregator"
+              action="action_delivery_order"
+              sequence="10"/>
+</odoo>

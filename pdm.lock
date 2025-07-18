@@ -84,13 +84,13 @@ files = [
 
 [[package]]
 name = "certifi"
-version = "2025.4.26"
-requires_python = ">=3.6"
+version = "2025.7.14"
+requires_python = ">=3.7"
 summary = "Python package for providing Mozilla's CA Bundle."
 groups = ["default"]
 files = [
-    {file = "certifi-2025.4.26-py3-none-any.whl", hash = "sha256:30350364dfe371162649852c63336a15c70c6510c2ad5015b21c2345311805f3"},
-    {file = "certifi-2025.4.26.tar.gz", hash = "sha256:0a816057ea3cdefcef70270d2c515e4506bbc954f417fa5ade2021213bb8f0c6"},
+    {file = "certifi-2025.7.14-py3-none-any.whl", hash = "sha256:6b31f564a415d79ee77df69d757bb49a5bb53bd9f756cbbe24394ffd6fc1f4b2"},
+    {file = "certifi-2025.7.14.tar.gz", hash = "sha256:8ea99dbdfaaf2ba2f9bac77b9249ef62ec5218e7c2b2e903378ed5fccf765995"},
 ]
 
 [[package]]
@@ -449,22 +449,26 @@ files = [
 
 [[package]]
 name = "maxminddb"
-version = "2.6.3"
-requires_python = ">=3.8"
+version = "2.7.0"
+requires_python = ">=3.9"
 summary = "Reader for the MaxMind DB format"
 groups = ["default"]
 files = [
-    {file = "maxminddb-2.6.3-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:2b0fef825b23df047876d2056cbb69fb8d8e4b965f744f674be75e16fb86a52e"},
-    {file = "maxminddb-2.6.3-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:a38faf03db15cc285009c0ddaacd04071b84ebd8ff7d773f700c7def695a291c"},
-    {file = "maxminddb-2.6.3-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:edab18a50470031fc8447bcd9285c9f5f952abef2b6db5579fe50665bdcda941"},
-    {file = "maxminddb-2.6.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:415dd5de87adc7640d3da2a8e7cf19a313c1a715cb84a3433f0e3b2d27665319"},
-    {file = "maxminddb-2.6.3-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:d78a02b70ededb3ba7317c24266217d7b68283e3be04cad0c34ee446a0217ee0"},
-    {file = "maxminddb-2.6.3-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:4b80275603bba6a95ed69d859d184dfa60bfd8e83cd4c8b722d7f7eaa9d95f8f"},
-    {file = "maxminddb-2.6.3-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:a6868438d1771c0bd0bbc95d84480c1ae04df72a85879e1ada42762250a00f59"},
-    {file = "maxminddb-2.6.3-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:efd875d43c4207fb90e10d582e4394d8a04f7b55c83c4d6bc0593a7be450e04f"},
-    {file = "maxminddb-2.6.3-cp312-cp312-win32.whl", hash = "sha256:aadb9d12e887a1f52e8214e539e5d78338356fad4ef2a51931f6f7dbe56c2228"},
-    {file = "maxminddb-2.6.3-cp312-cp312-win_amd64.whl", hash = "sha256:7d6024d1e40244b5549c5e6063af109399a2f89503a24916b5139c4d0657f1c8"},
-    {file = "maxminddb-2.6.3.tar.gz", hash = "sha256:d2c3806baa7aa047aa1bac7419e7e353db435f88f09d51106a84dbacf645d254"},
+    {file = "maxminddb-2.7.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:335e0ab48b3962991f0d238e6d1875ca121ebfb43449b20bd5e77561f69f2ac2"},
+    {file = "maxminddb-2.7.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:22ec500b99ba161bd97daec745d7cdd5f6a38a7d7e076045fef5e4ce8a76a176"},
+    {file = "maxminddb-2.7.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0d5676a7b9f4dd5780709bc3937a0a860224b9cda42e01d1bb4e31c5ed5f7599"},
+    {file = "maxminddb-2.7.0-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:d6a7b4a7d563e4e9bebc87678f818e6d83134d80f2bf4a43392ffcbd6d7775b4"},
+    {file = "maxminddb-2.7.0-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:705c9110ed76ff1fccef120a0974ef2fa577f8f5d4d30235b7d29416295c626d"},
+    {file = "maxminddb-2.7.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0a9b2391ade3fecf2716fba27ed50982a6cb54986039496d454917dfd416098e"},
+    {file = "maxminddb-2.7.0-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:78be13a164fa09743734d39873003e734a11b318707508a8934c53f2b4ad6f03"},
+    {file = "maxminddb-2.7.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:14c5aaecbeadacb19856593e833aab8318a7ee693aa4fde777286330cf8f23a8"},
+    {file = "maxminddb-2.7.0-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:97faaf488036fa9403a6a882f09a50f3eaf3855245fff707ff960d3fb1e1ac70"},
+    {file = "maxminddb-2.7.0-cp312-cp312-musllinux_1_2_ppc64le.whl", hash = "sha256:843ff9d8524ae01f66576f057bb8b05a889b4587f32b1da4f7fc3cf366026497"},
+    {file = "maxminddb-2.7.0-cp312-cp312-musllinux_1_2_s390x.whl", hash = "sha256:6f4880e6aeb55cfab6bde170e3a99b9e71c7a660895032d32ccd40101eeed9a8"},
+    {file = "maxminddb-2.7.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:5e225d892c88ce1c844c27881143555fda954bdc8414e0e2a3873d6717e92295"},
+    {file = "maxminddb-2.7.0-cp312-cp312-win32.whl", hash = "sha256:4e9126343edc503233900783bd97cb210b1be740e8c99a5f03484275b8a072cb"},
+    {file = "maxminddb-2.7.0-cp312-cp312-win_amd64.whl", hash = "sha256:1cdeb12a98cf4d9d6e4b1496f0381745c7a028368e9085ad2a6fee5300e9097f"},
+    {file = "maxminddb-2.7.0.tar.gz", hash = "sha256:23a715ed3b3aed07adae4beeed06c51fd582137b5ae13d3c6e5ca4890f70ebbf"},
 ]
 
 [[package]]
@@ -544,14 +548,14 @@ files = [
 
 [[package]]
 name = "platformdirs"
-version = "4.3.7"
+version = "4.3.8"
 requires_python = ">=3.9"
 summary = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
 groups = ["default"]
 marker = "python_version >= \"3.11\""
 files = [
-    {file = "platformdirs-4.3.7-py3-none-any.whl", hash = "sha256:a03875334331946f13c549dbd8f4bac7a13a50a895a0eb1e8c6a8ace80d40a94"},
-    {file = "platformdirs-4.3.7.tar.gz", hash = "sha256:eb437d586b6a0986388f0d6f74aa0cde27b48d0e3d66843640bfb6bdcdb6e351"},
+    {file = "platformdirs-4.3.8-py3-none-any.whl", hash = "sha256:ff7059bb7eb1179e2685604f4aaf157cfd9535242bd23742eadc3c13542139b4"},
+    {file = "platformdirs-4.3.8.tar.gz", hash = "sha256:3d512d96e16bcb959a814c9f348431070822a6496326a4be0911c40b5a74c2bc"},
 ]
 
 [[package]]
@@ -762,14 +766,14 @@ files = [
 
 [[package]]
 name = "pywin32"
-version = "310"
+version = "311"
 summary = "Python for Window Extensions"
 groups = ["default"]
 marker = "sys_platform == \"win32\""
 files = [
-    {file = "pywin32-310-cp312-cp312-win32.whl", hash = "sha256:8a75a5cc3893e83a108c05d82198880704c44bbaee4d06e442e471d3c9ea4f3d"},
-    {file = "pywin32-310-cp312-cp312-win_amd64.whl", hash = "sha256:bf5c397c9a9a19a6f62f3fb821fbf36cac08f03770056711f765ec1503972060"},
-    {file = "pywin32-310-cp312-cp312-win_arm64.whl", hash = "sha256:2349cc906eae872d0663d4d6290d13b90621eaf78964bb1578632ff20e152966"},
+    {file = "pywin32-311-cp312-cp312-win32.whl", hash = "sha256:750ec6e621af2b948540032557b10a2d43b0cee2ae9758c54154d711cc852d31"},
+    {file = "pywin32-311-cp312-cp312-win_amd64.whl", hash = "sha256:b8c095edad5c211ff31c05223658e71bf7116daa0ecf3ad85f3201ea3190d067"},
+    {file = "pywin32-311-cp312-cp312-win_arm64.whl", hash = "sha256:e286f46a9a39c4a18b319c28f59b61de793654af2f395c102b4f819e584b5852"},
 ]
 
 [[package]]
@@ -883,14 +887,14 @@ files = [
 
 [[package]]
 name = "setuptools"
-version = "80.3.1"
+version = "80.9.0"
 requires_python = ">=3.9"
 summary = "Easily download, build, install, upgrade, and uninstall Python packages"
 groups = ["default"]
 marker = "sys_platform != \"win32\" and python_version >= \"3.12\""
 files = [
-    {file = "setuptools-80.3.1-py3-none-any.whl", hash = "sha256:ea8e00d7992054c4c592aeb892f6ad51fe1b4d90cc6947cc45c45717c40ec537"},
-    {file = "setuptools-80.3.1.tar.gz", hash = "sha256:31e2c58dbb67c99c289f51c16d899afedae292b978f8051efaf6262d8212f927"},
+    {file = "setuptools-80.9.0-py3-none-any.whl", hash = "sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922"},
+    {file = "setuptools-80.9.0.tar.gz", hash = "sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c"},
 ]
 
 [[package]]
@@ -917,13 +921,13 @@ files = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.13.2"
-requires_python = ">=3.8"
-summary = "Backported and Experimental Type Hints for Python 3.8+"
+version = "4.14.1"
+requires_python = ">=3.9"
+summary = "Backported and Experimental Type Hints for Python 3.9+"
 groups = ["default"]
 files = [
-    {file = "typing_extensions-4.13.2-py3-none-any.whl", hash = "sha256:a439e7c04b49fec3e5d3e2beaa21755cadbbdc391694e28ccdd36ca4a1408f8c"},
-    {file = "typing_extensions-4.13.2.tar.gz", hash = "sha256:e6c81219bd689f51865d9e372991c540bda33a0379d5573cddb9a3a23f7caaef"},
+    {file = "typing_extensions-4.14.1-py3-none-any.whl", hash = "sha256:d1e1e3b58374dc93031d6eda2420a48ea44a36c2b4766a4fdeb3710755731d76"},
+    {file = "typing_extensions-4.14.1.tar.gz", hash = "sha256:38b39f4aeeab64884ce9f74c94263ef78f3c22467c8724005483154c26648d36"},
 ]
 
 [[package]]
@@ -1023,8 +1027,8 @@ files = [
 
 [[package]]
 name = "zope-event"
-version = "5.0"
-requires_python = ">=3.7"
+version = "5.1"
+requires_python = ">=3.9"
 summary = "Very basic event publishing system"
 groups = ["default"]
 marker = "sys_platform != \"win32\" and python_version >= \"3.12\""
@@ -1032,8 +1036,8 @@ dependencies = [
     "setuptools",
 ]
 files = [
-    {file = "zope.event-5.0-py3-none-any.whl", hash = "sha256:2832e95014f4db26c47a13fdaef84cef2f4df37e66b59d8f1f4a8f319a632c26"},
-    {file = "zope.event-5.0.tar.gz", hash = "sha256:bac440d8d9891b4068e2b5a2c5e2c9765a9df762944bda6955f96bb9b91e67cd"},
+    {file = "zope_event-5.1-py3-none-any.whl", hash = "sha256:53de8f0e9f61dc0598141ac591f49b042b6d74784dab49971b9cc91d0f73a7df"},
+    {file = "zope_event-5.1.tar.gz", hash = "sha256:a153660e0c228124655748e990396b9d8295d6e4f546fa1b34f3319e1c666e7f"},
 ]
 
 [[package]]
