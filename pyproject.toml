@@ -112,15 +112,8 @@ source-includes = ["source/odoo"]
 
 [tool.pdm.scripts]
 odoo = "python source/odoo/odoo-bin -c odoo.conf --limit-memory-soft=0 --limit-memory-hard=0"
-test-run = "coverage run --source=training --source=source/odoo source/odoo/odoo-bin -c odoo.conf --test-enable --stop-after-init"
-test-html = "coverage html --directory htmlcov --include=training/*"
-test = "bash -c 'pdm run test-run && pdm run test-html'"
-test-coverage = "coverage run --source=training --source=source/odoo --omit=*/tests/*,*/test_* source/odoo/odoo-bin -c odoo.conf --test-enable --stop-after-init"
-test-coverage-html = "coverage html --directory htmlcov --include=training/* --omit=*/tests/*,*/test_*"
-test-coverage-xml = "coverage xml --output-file coverage.xml --include=training/* --omit=*/tests/*,*/test_*"
-test-coverage-report = "coverage report --include=training/* --omit=*/tests/*,*/test_*"
-test-full = "bash -c 'pdm run test-coverage && pdm run test-coverage-html && pdm run test-coverage-xml && pdm run test-coverage-report'"
-test-clean = "coverage erase"
+coverage-run = "coverage run --source=training source/odoo/odoo-bin -c odoo.conf --test-enable --stop-after-init -d test_db --test-tags delivery_aggregator"
+coverage-html = "coverage html --directory htmlcov --include=training/* --omit=*/tests/*,*/test_*,*/__init__.py,*/__manifest__.py"
 
 [tool.coverage.run]
 source = ["training", "source/odoo"]

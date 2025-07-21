@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, exceptions
 from datetime import date
 
 class MonthlySummary(models.Model):
@@ -166,6 +166,6 @@ class MonthlySummary(models.Model):
                     ('id', '!=', record.id)
                 ])
                 if existing_record:
-                    raise models.ValidationError(
+                    raise exceptions.ValidationError(
                         f'A summary for {record.month.title()} {record.year} already exists!'
                     )
