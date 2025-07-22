@@ -1,5 +1,6 @@
 from odoo import models, fields, api, exceptions
 from datetime import date
+import calendar
 
 class MonthlySummary(models.Model):
     _name = 'monthly.summary'
@@ -126,10 +127,13 @@ class MonthlySummary(models.Model):
         if not month_num:
             return
 
+        # Get the last day of the month
+        last_day = calendar.monthrange(self.year, month_num)[1]
+        
         # Find delivery orders for the selected month and year
         delivery_orders = self.env['delivery.order'].search([
             ('delivery_date', '>=', f'{self.year}-{month_num:02d}-01'),
-            ('delivery_date', '<=', f'{self.year}-{month_num:02d}-31')
+            ('delivery_date', '<=', f'{self.year}-{month_num:02d}-{last_day:02d}')
         ])
 
         # Update the delivery_order_ids field
