@@ -36,10 +36,10 @@ class MonthlySummary(models.Model):
     summary_date = fields.Date(string='Summary Date', required=True, default=lambda self: fields.Date.context_today(self))
     date_range = fields.Char(string='Date Range', compute='_compute_date_range', store=True)
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('processed', 'Processed')
-    ], string='State', required=True, default='draft')
+        ('draft', 'In Preparation'),
+        ('confirmed', 'Ready for Processing'),
+        ('processed', 'Processing Complete')
+    ], string='State', required=True, default='draft', order='draft,confirmed,processed')
 
     @api.depends('month', 'year')
     def _compute_date_range(self):
@@ -110,6 +110,25 @@ class MonthlySummary(models.Model):
         """Automatically populate delivery orders when month or year changes"""
         if self.month and self.year:
             self._update_delivery_orders()
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to automatically populate delivery orders"""
+        records = super().create(vals_list)
+        for record in records:
+            if record.month and record.year:
+                record._update_delivery_orders()
+        return records
+
+    def write(self, vals):
+        """Override write to automatically populate delivery orders when month/year changes"""
+        result = super().write(vals)
+        # Check if month or year was updated
+        if 'month' in vals or 'year' in vals:
+            for record in self:
+                if record.month and record.year:
+                    record._update_delivery_orders()
+        return result
 
     def _update_delivery_orders(self):
         """Update delivery orders based on selected month and year"""

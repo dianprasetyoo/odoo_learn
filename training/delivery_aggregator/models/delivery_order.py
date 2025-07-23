@@ -13,9 +13,9 @@ class DeliveryOrder(models.Model):
     total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True, readonly=True)
     monthly_summary_id = fields.Many2one('monthly.summary', string='Monthly Summary')
     state = fields.Selection([
-        ('draft', 'Draft'), 
-        ('confirmed', 'Confirmed'), 
-        ('delivered', 'Delivered')
+        ('draft', 'New Order'), 
+        ('confirmed', 'Ready for Delivery'), 
+        ('delivered', 'Successfully Delivered')
     ], string='State', required=True, default='draft')
     notes = fields.Text(string='Notes')
 

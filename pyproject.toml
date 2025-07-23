@@ -112,6 +112,7 @@ source-includes = ["source/odoo"]
 
 [tool.pdm.scripts]
 odoo = "python source/odoo/odoo-bin -c odoo.conf --limit-memory-soft=0 --limit-memory-hard=0"
+odoo-demo = "python source/odoo/odoo-bin -c odoo.conf --init delivery_aggregator --database test_demo_db --limit-memory-soft=0 --limit-memory-hard=0"
 coverage-run = "coverage run --source=training source/odoo/odoo-bin -c odoo.conf --test-enable --stop-after-init -d test_db --test-tags delivery_aggregator"
 coverage-html = "coverage html --directory htmlcov --include=training/* --omit=*/tests/*,*/test_*,*/__init__.py,*/__manifest__.py"
 

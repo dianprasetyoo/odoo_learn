@@ -17,13 +17,17 @@
         'sale',
     ],
     'data': [
+        #Security
         'security/ir.model.access.csv',
+        'security/record_rules.xml',
+        #Data
         'data/delivery_sequence.xml',
+        #Views
         'views/delivery_order_views.xml',
         'views/monthly_summary_views.xml',
     ],
     'demo': [
-        'data/delivery_sequence.xml',
+        'demo/demo.xml',
     ],
     'installable': True,
     'application': True,
