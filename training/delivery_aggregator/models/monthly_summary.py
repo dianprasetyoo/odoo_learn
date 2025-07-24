@@ -1,6 +1,11 @@
 from odoo import models, fields, api, exceptions
 from datetime import date
 import calendar
+import logging
+from dateutil.relativedelta import relativedelta
+
+# Setup logger untuk tracking dan debugging
+_logger = logging.getLogger(__name__)
 
 class MonthlySummary(models.Model):
     _name = 'monthly.summary'
@@ -192,3 +197,68 @@ class MonthlySummary(models.Model):
                     raise exceptions.ValidationError(
                         f'A summary for {record.month.title()} {record.year} already exists!'
                     )
+
+    @api.model
+    def _auto_generate_monthly_summary(self):
+        """
+        AUTO GENERATE MONTHLY SUMMARY
+        =============================
+        
+        Method ini dipanggil oleh cron job setiap bulan untuk otomatis membuat
+        monthly summary dari bulan sebelumnya.
+        
+        Returns:
+            - MonthlySummary record jika berhasil
+            - False jika terjadi error
+        """
+        try:
+            # STEP 1: Ambil tanggal hari ini dan hitung bulan sebelumnya
+            current_date = fields.Date.today()  # Contoh: 2024-02-15
+            prev_month_date = current_date - relativedelta(months=1)  # Contoh: 2024-01-15
+            
+            # STEP 2: Mapping angka bulan ke nama bulan (sesuai dengan field selection)
+            month_mapping = {
+                1: 'january', 2: 'february', 3: 'march', 4: 'april',
+                5: 'may', 6: 'june', 7: 'july', 8: 'august',
+                9: 'september', 10: 'october', 11: 'november', 12: 'december'
+            }
+            
+            # Ambil nama bulan dan tahun dari tanggal bulan sebelumnya
+            month_name = month_mapping.get(prev_month_date.month)  # Contoh: 'january'
+            year = prev_month_date.year  # Contoh: 2024
+            
+            # Validasi: pastikan mapping bulan valid
+            if not month_name:
+                _logger.error(f"Invalid month number: {prev_month_date.month}")
+                return False
+            
+            # STEP 3: Cek apakah summary untuk bulan dan tahun ini sudah ada
+            # Ini mencegah duplikasi jika cron job berjalan berkali-kali
+            existing_summary = self.search([
+                ('month', '=', month_name),  # Contoh: 'january'
+                ('year', '=', year)          # Contoh: 2024
+            ])
+            
+            # STEP 4: Jika summary belum ada, buat yang baru
+            if not existing_summary:
+                # Buat record monthly summary baru
+                summary = self.create({
+                    'name': f'Auto Generated - {month_name.title()} {year}',  # Contoh: 'Auto Generated - January 2024'
+                    'month': month_name,  # Contoh: 'january'
+                    'year': year,         # Contoh: 2024
+                    'state': 'confirmed'  # Auto set ke confirmed (tidak perlu draft)
+                })
+                
+                # Log untuk tracking dan monitoring
+                _logger.info(f"Auto-generated monthly summary for {month_name.title()} {year}")
+                
+                return summary
+            else:
+                # STEP 5: Jika summary sudah ada, return yang ada (mencegah duplikasi)
+                _logger.info(f"Monthly summary for {month_name.title()} {year} already exists")
+                return existing_summary
+                
+        except Exception as e:
+            # Error handling: log error dan return False
+            _logger.error(f"Error in auto-generating monthly summary: {e}")
+            return False

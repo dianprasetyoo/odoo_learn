@@ -22,6 +22,7 @@
         'security/record_rules.xml',
         #Data
         'data/delivery_sequence.xml',
+        'data/delivery_cron.xml',  # Cron job untuk auto-generate monthly summary
         #Views
         'views/delivery_order_views.xml',
         'views/monthly_summary_views.xml',
