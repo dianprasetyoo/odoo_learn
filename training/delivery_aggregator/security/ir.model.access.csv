@@ -4,3 +4,6 @@ access_delivery_order_manager,delivery.order.manager,model_delivery_order,base.g
 
 access_monthly_summary_user,monthly.summary.user,model_monthly_summary,base.group_user,1,1,1,0
 access_monthly_summary_manager,monthly.summary.manager,model_monthly_summary,base.group_erp_manager,1,1,1,1
+
+access_delivery_assign_wizard_user,delivery.assign.wizard.user,model_delivery_assign_wizard,base.group_user,1,1,1,1
+access_delivery_assign_wizard_manager,delivery.assign.wizard.manager,model_delivery_assign_wizard,base.group_erp_manager,1,1,1,1

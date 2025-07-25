@@ -26,9 +26,11 @@
         #Views
         'views/delivery_order_views.xml',
         'views/monthly_summary_views.xml',
+        'views/delivery_order_tracking_views.xml',
     ],
     'demo': [
         'demo/demo.xml',
+        'demo/demo_tracking.xml',
     ],
     'installable': True,
     'application': True,

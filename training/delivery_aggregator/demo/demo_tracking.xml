@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo data untuk testing tracking functionality -->
+        
+        <!-- Demo delivery orders dengan tracking data -->
+        <record id="demo_delivery_order_tracking_1" model="delivery.order">
+            <field name="name">DO/2024/00001</field>
+            <field name="customer_id" ref="demo_customer_1"/>
+            <field name="delivery_date">2024-01-15</field>
+            <field name="product_id" ref="demo_product_1"/>
+            <field name="quantity">100.0</field>
+            <field name="unit_price">5000.0</field>
+            <field name="state">confirmed</field>
+            <field name="delivery_time">2024-01-15 14:00:00</field>
+            <field name="driver_name">John Doe</field>
+            <field name="vehicle_number">B 1234 ABC</field>
+            <field name="notes">Delivery to PT Sawit Makmur Sejahtera - CPO shipment</field>
+        </record>
+
+        <record id="demo_delivery_order_tracking_2" model="delivery.order">
+            <field name="name">DO/2024/00002</field>
+            <field name="customer_id" ref="demo_customer_2"/>
+            <field name="delivery_date">2024-01-16</field>
+            <field name="product_id" ref="demo_product_2"/>
+            <field name="quantity">50.0</field>
+            <field name="unit_price">7500.0</field>
+            <field name="state">draft</field>
+            <field name="delivery_time">2024-01-16 09:00:00</field>
+            <field name="driver_name">Jane Smith</field>
+            <field name="vehicle_number">B 5678 DEF</field>
+            <field name="notes">PKO delivery to PT Kelapa Sawit Indonesia</field>
+        </record>
+
+        <record id="demo_delivery_order_tracking_3" model="delivery.order">
+            <field name="name">DO/2024/00003</field>
+            <field name="customer_id" ref="demo_customer_3"/>
+            <field name="delivery_date">2024-01-17</field>
+            <field name="product_id" ref="demo_product_3"/>
+            <field name="quantity">200.0</field>
+            <field name="unit_price">3000.0</field>
+            <field name="state">delivered</field>
+            <field name="delivery_time">2024-01-17 16:00:00</field>
+            <field name="driver_name">Mike Johnson</field>
+            <field name="vehicle_number">B 9012 GHI</field>
+            <field name="notes">TBS delivery completed successfully</field>
+        </record>
+
+        <record id="demo_delivery_order_tracking_4" model="delivery.order">
+            <field name="name">DO/2024/00004</field>
+            <field name="customer_id" ref="demo_customer_4"/>
+            <field name="delivery_date">2024-01-18</field>
+            <field name="product_id" ref="demo_product_4"/>
+            <field name="quantity">75.0</field>
+            <field name="unit_price">6000.0</field>
+            <field name="state">draft</field>
+            <field name="notes">PFAD delivery - driver not assigned yet</field>
+        </record>
+
+        <record id="demo_delivery_order_tracking_5" model="delivery.order">
+            <field name="name">DO/2024/00005</field>
+            <field name="customer_id" ref="demo_customer_5"/>
+            <field name="delivery_date">2024-01-19</field>
+            <field name="product_id" ref="demo_product_5"/>
+            <field name="quantity">150.0</field>
+            <field name="unit_price">4000.0</field>
+            <field name="state">confirmed</field>
+            <field name="delivery_time">2024-01-19 11:00:00</field>
+            <field name="driver_name">Sarah Wilson</field>
+            <field name="vehicle_number">B 3456 JKL</field>
+            <field name="notes">PKC delivery to UD Sawit Prima</field>
+        </record>
+    </data>
+</odoo> 
