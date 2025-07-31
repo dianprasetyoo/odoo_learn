@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo Quotations (Draft Sale Orders) for Integration Testing -->
+        
+        <!-- Demo Quotation 1 -->
+        <record id="demo_quotation_1" model="sale.order">
+            <field name="partner_id" ref="demo_customer_3"/>
+            <field name="date_order">2024-01-25 09:00:00</field>
+            <field name="state">draft</field>
+        </record>
+
+        <!-- Demo Quotation Line 1 -->
+        <record id="demo_quotation_line_1" model="sale.order.line">
+            <field name="order_id" ref="demo_quotation_1"/>
+            <field name="product_id" ref="demo_product_4"/>
+            <field name="product_uom_qty">30.0</field>
+            <field name="price_unit">3000000.0</field>
+        </record>
+
+        <!-- Demo Quotation Line 2 -->
+        <record id="demo_quotation_line_2" model="sale.order.line">
+            <field name="order_id" ref="demo_quotation_1"/>
+            <field name="product_id" ref="demo_product_5"/>
+            <field name="product_uom_qty">20.0</field>
+            <field name="price_unit">2000000.0</field>
+        </record>
+
+        <!-- Demo Quotation 2 -->
+        <record id="demo_quotation_2" model="sale.order">
+            <field name="partner_id" ref="demo_customer_4"/>
+            <field name="date_order">2024-01-26 11:30:00</field>
+            <field name="state">draft</field>
+        </record>
+
+        <!-- Demo Quotation Line 3 -->
+        <record id="demo_quotation_line_3" model="sale.order.line">
+            <field name="order_id" ref="demo_quotation_2"/>
+            <field name="product_id" ref="demo_product_1"/>
+            <field name="product_uom_qty">75.0</field>
+            <field name="price_unit">8500000.0</field>
+        </record>
+
+        <!-- Demo Delivery Orders created from Quotations -->
+        <record id="demo_delivery_from_quotation_1" model="delivery.order">
+            <field name="name">DO/2024/00013</field>
+            <field name="customer_id" ref="demo_customer_3"/>
+            <field name="sale_order_id" ref="demo_quotation_1"/>
+            <field name="sale_order_line_id" ref="demo_quotation_line_1"/>
+            <field name="delivery_date">2024-01-27</field>
+            <field name="product_id" ref="demo_product_4"/>
+            <field name="quantity">30.0</field>
+            <field name="unit_price">3000000.0</field>
+            <field name="state">draft</field>
+            <field name="notes">Created from Quotation: Q001 (Draft)</field>
+        </record>
+
+        <record id="demo_delivery_from_quotation_2" model="delivery.order">
+            <field name="name">DO/2024/00014</field>
+            <field name="customer_id" ref="demo_customer_3"/>
+            <field name="sale_order_id" ref="demo_quotation_1"/>
+            <field name="sale_order_line_id" ref="demo_quotation_line_2"/>
+            <field name="delivery_date">2024-01-28</field>
+            <field name="product_id" ref="demo_product_5"/>
+            <field name="quantity">20.0</field>
+            <field name="unit_price">2000000.0</field>
+            <field name="state">confirmed</field>
+            <field name="notes">Created from Quotation: Q001 (Draft)</field>
+        </record>
+
+        <record id="demo_delivery_from_quotation_3" model="delivery.order">
+            <field name="name">DO/2024/00015</field>
+            <field name="customer_id" ref="demo_customer_4"/>
+            <field name="sale_order_id" ref="demo_quotation_2"/>
+            <field name="sale_order_line_id" ref="demo_quotation_line_3"/>
+            <field name="delivery_date">2024-01-29</field>
+            <field name="product_id" ref="demo_product_1"/>
+            <field name="quantity">75.0</field>
+            <field name="unit_price">8500000.0</field>
+            <field name="state">delivered</field>
+            <field name="notes">Created from Quotation: Q002 (Draft)</field>
+        </record>
+    </data>
+</odoo> 

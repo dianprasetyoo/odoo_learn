@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Wizard Form View -->
+        <record id="view_delivery_create_from_quotation_wizard_form" model="ir.ui.view">
+            <field name="name">delivery.create.from.quotation.wizard.form</field>
+            <field name="model">delivery.create.from.quotation.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Create Delivery Orders from Quotation">
+                    <sheet>
+                        <group>
+                            <field name="sale_order_name"/>
+                            <field name="partner_id"/>
+                            <field name="sale_order_id" invisible="1"/>
+                            <field name="sale_order_line_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="message" readonly="1"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_create_delivery_orders" 
+                                string="Create Delivery Orders" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button name="action_cancel" 
+                                string="Cancel" 
+                                type="object" 
+                                class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard Action -->
+        <record id="action_delivery_create_from_quotation_wizard" model="ir.actions.act_window">
+            <field name="name">Create Delivery Orders from Quotation</field>
+            <field name="res_model">delivery.create.from.quotation.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo> 

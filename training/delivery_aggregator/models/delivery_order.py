@@ -12,6 +12,9 @@ class DeliveryOrder(models.Model):
     unit_price = fields.Float(string='Unit Price', required=True)
     total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True, readonly=True)
     monthly_summary_id = fields.Many2one('monthly.summary', string='Monthly Summary')
+    # Integration with Sales
+    sale_order_id = fields.Many2one('sale.order', string='Sale Order', help='Related sale order')
+    sale_order_line_id = fields.Many2one('sale.order.line', string='Sale Order Line', help='Related sale order line')
     state = fields.Selection([
         ('draft', 'New Order'), 
         ('confirmed', 'Ready for Delivery'), 
@@ -57,3 +60,62 @@ class DeliveryOrder(models.Model):
             if record.state != 'draft':
                 raise exceptions.UserError("Only draft delivery orders can be deleted.")
         return super(DeliveryOrder, self).unlink()
+
+    # Sales Integration Methods
+    def action_view_sale_order(self):
+        """Open related sale order"""
+        self.ensure_one()
+        if self.sale_order_id:
+            return {
+                'name': 'Sale Order',
+                'type': 'ir.actions.act_window',
+                'res_model': 'sale.order',
+                'res_id': self.sale_order_id.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        return False
+
+    @api.model
+    def create_from_sale_order(self, sale_order_id):
+        """Create delivery order from sale order"""
+        sale_order = self.env['sale.order'].browse(sale_order_id)
+        if not sale_order.exists():
+            return False
+        
+        delivery_orders = []
+        for line in sale_order.order_line:
+            if line.product_id and line.product_uom_qty > 0:
+                delivery_order = self.create({
+                    'customer_id': sale_order.partner_id.id,
+                    'delivery_date': fields.Date.today(),
+                    'product_id': line.product_id.id,
+                    'quantity': line.product_uom_qty,
+                    'unit_price': line.price_unit,
+                    'sale_order_id': sale_order.id,
+                    'sale_order_line_id': line.id,
+                    'notes': f'Created from Sale Order: {sale_order.name}',
+                })
+                delivery_orders.append(delivery_order)
+        
+        return delivery_orders
+
+    @api.model
+    def create_from_sale_order_line(self, sale_order_line_id):
+        """Create delivery order from specific sale order line"""
+        sale_line = self.env['sale.order.line'].browse(sale_order_line_id)
+        if not sale_line.exists():
+            return False
+        
+        delivery_order = self.create({
+            'customer_id': sale_line.order_id.partner_id.id,
+            'delivery_date': fields.Date.today(),
+            'product_id': sale_line.product_id.id,
+            'quantity': sale_line.product_uom_qty,
+            'unit_price': sale_line.price_unit,
+            'sale_order_id': sale_line.order_id.id,
+            'sale_order_line_id': sale_line.id,
+            'notes': f'Created from Sale Order Line: {sale_line.order_id.name}',
+        })
+        
+        return delivery_order

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Sale Order Form View - Add Delivery Order Integration -->
+        <record id="view_order_form_inherit_delivery" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.delivery</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <!-- Add delivery order buttons to header -->
+                <xpath expr="//header" position="inside">
+                    <button name="action_create_delivery_orders" 
+                            string="Create Delivery Orders" 
+                            type="object" 
+                            class="oe_highlight"
+                            invisible="delivery_order_count > 0"/>
+                    <button name="action_view_delivery_orders" 
+                            string="View Delivery Orders" 
+                            type="object" 
+                            class="btn-secondary"
+                            invisible="delivery_order_count == 0"/>
+                </xpath>
+                
+                <!-- Add delivery order count field -->
+                <xpath expr="//sheet" position="inside">
+                    <div class="oe_button_box" name="button_box">
+                        <field name="delivery_order_count" widget="statinfo" string="Delivery Orders"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo> 

@@ -7,3 +7,6 @@ access_monthly_summary_manager,monthly.summary.manager,model_monthly_summary,bas
 
 access_delivery_assign_wizard_user,delivery.assign.wizard.user,model_delivery_assign_wizard,base.group_user,1,1,1,1
 access_delivery_assign_wizard_manager,delivery.assign.wizard.manager,model_delivery_assign_wizard,base.group_erp_manager,1,1,1,1
+
+access_delivery_create_from_quotation_wizard_user,delivery.create.from.quotation.wizard.user,model_delivery_create_from_quotation_wizard,base.group_user,1,1,1,1
+access_delivery_create_from_quotation_wizard_manager,delivery.create.from.quotation.wizard.manager,model_delivery_create_from_quotation_wizard,base.group_erp_manager,1,1,1,1
