@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_daily_price_tree" model="ir.ui.view">
+        <field name="name">daily.price.tree</field>
+        <field name="model">daily.price</field>
+        <field name="arch" type="xml">
+            <list string="Daily Prices">
+                <field name="product_id"/>
+                <field name="customer_id"/>
+                <field name="date"/>
+                <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                <field name="active" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_daily_price_form" model="ir.ui.view">
+        <field name="name">daily.price.form</field>
+        <field name="model">daily.price</field>
+        <field name="arch" type="xml">
+            <form string="Daily Price">
+                <header>
+                    <button name="toggle_active" type="object" string="Archive" class="oe_stat_button" icon="fa-archive" invisible="not active"/>
+                    <button name="toggle_active" type="object" string="Unarchive" class="oe_stat_button" icon="fa-archive" invisible="active"/>
+                    <button name="action_copy_to_next_day" type="object" string="Copy to Next Day" class="btn-secondary" icon="fa-copy"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" placeholder="Daily Price Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Product &amp; Customer">
+                            <field name="product_id" required="1"/>
+                            <field name="customer_id" required="1"/>
+                        </group>
+                        <group string="General Information" invisible="1">
+                            <field name="date" required="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Daily Price Lines" name="daily_price_lines">
+                            <div class="oe_button_box" name="button_box">
+                                <button name="action_add_price_line" type="object" string="Add Price Line" class="btn-primary" icon="fa-plus"/>
+                                <button name="action_view_price_lines" type="object" string="View Price Lines" class="btn-secondary" icon="fa-list"/>
+                            </div>
+                            <field name="daily_price_line_ids" readonly="1"/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Add any additional notes here..." nolabel="1"/>
+                        </page>
+                        <page string="System Information" name="system_info">
+                            <group>
+                                <group string="Status">
+                                    <field name="active" invisible="1"/>
+                                </group>
+                                <group string="Timestamps">
+                                    <field name="create_date" readonly="1"/>
+                                    <field name="create_uid" readonly="1"/>
+                                    <field name="write_date" readonly="1"/>
+                                    <field name="write_uid" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Daily Price Line Form View -->
+    <record id="view_daily_price_line_form" model="ir.ui.view">
+        <field name="name">daily.price.line.form</field>
+        <field name="model">daily.price.line</field>
+        <field name="arch" type="xml">
+            <form string="Add Daily Price Line">
+                <sheet>
+                    <group>
+                        <group string="Price Information">
+                            <field name="daily_price_id" invisible="1"/>
+                            <field name="date" required="1"/>
+                            <field name="unit_price" widget="monetary" required="1"/>
+                            <field name="currency_id" required="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Add any notes for this price line..." nolabel="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Save" type="object" name="action_save" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Daily Price Lines List View -->
+    <record id="view_daily_price_line_list" model="ir.ui.view">
+        <field name="name">daily.price.line.list</field>
+        <field name="model">daily.price.line</field>
+        <field name="arch" type="xml">
+            <list string="Daily Price Lines">
+                <field name="date"/>
+                <field name="unit_price" widget="monetary"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action for Daily Price Lines -->
+    <record id="action_daily_price_lines" model="ir.actions.act_window">
+        <field name="name">Daily Price Lines</field>
+        <field name="res_model">daily.price.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_daily_price_search" model="ir.ui.view">
+        <field name="name">daily.price.search</field>
+        <field name="model">daily.price</field>
+        <field name="arch" type="xml">
+            <search string="Search Daily Prices">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="customer_id"/>
+                <field name="date"/>
+                <filter string="Today" name="today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="this_week" domain="[('date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('date', '>=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_daily_price" model="ir.actions.act_window">
+        <field name="name">Daily Prices</field>
+        <field name="res_model">daily.price</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_daily_price_search"/>
+        <field name="context">{'search_default_active': 1, 'default_view_mode': 'form'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first daily price!
+            </p>
+            <p>
+                Manage daily prices for different product-customer combinations.
+                You can set different prices for the same product and customer on different dates.
+                These prices will automatically apply to sale orders.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for Creating New Daily Price -->
+    <record id="action_daily_price_create" model="ir.actions.act_window">
+        <field name="name">Create Daily Price</field>
+        <field name="res_model">daily.price</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo> 

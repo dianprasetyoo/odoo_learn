@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Daily Price Menu - Under Sales Products -->
+    <menuitem id="menu_daily_price_list"
+              name="Daily Prices"
+              parent="sale.product_menu_catalog"
+              action="action_daily_price"
+              sequence="40"/>
+
+</odoo> 
