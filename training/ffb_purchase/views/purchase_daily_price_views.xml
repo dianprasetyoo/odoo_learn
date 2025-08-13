@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- List View -->
-    <record id="view_daily_price_tree" model="ir.ui.view">
-        <field name="name">daily.price.tree</field>
-        <field name="model">daily.price</field>
+    <record id="view_purchase_daily_price_tree" model="ir.ui.view">
+        <field name="name">purchase.daily.price.tree</field>
+        <field name="model">purchase.daily.price</field>
         <field name="arch" type="xml">
-            <list string="Daily Prices">
+            <list string="Purchase Daily Prices">
                 <field name="name"/>
                 <field name="product_id"/>
-                <field name="customer_id"/>
+                <field name="supplier_id"/>
                 <field name="date"/>
                 <field name="unit_price" widget="monetary"/>
                 <field name="currency_id"/>
@@ -19,24 +19,24 @@
     </record>
 
     <!-- Form View -->
-    <record id="view_daily_price_form" model="ir.ui.view">
-        <field name="name">daily.price.form</field>
-        <field name="model">daily.price</field>
+    <record id="view_purchase_daily_price_form" model="ir.ui.view">
+        <field name="name">purchase.daily.price.form</field>
+        <field name="model">purchase.daily.price</field>
         <field name="arch" type="xml">
-            <form string="Daily Price">
+            <form string="Purchase Daily Price">
                 <header>
                     <button name="action_copy_to_next_day" type="object" string="Copy to Next Day" class="btn-secondary" icon="fa-copy"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" readonly="1" placeholder="Daily Price Name"/>
+                            <field name="name" readonly="1" placeholder="Purchase Daily Price Name"/>
                         </h1>
                     </div>
                     <group>
-                        <group string="Product &amp; Customer">
+                        <group string="Product &amp; Supplier">
                             <field name="product_id" required="1"/>
-                            <field name="customer_id" required="1"/>
+                            <field name="supplier_id" required="1"/>
                         </group>
                         <group string="Price Information">
                             <field name="date" required="1"/>
@@ -58,21 +58,21 @@
     </record>
 
     <!-- Search View -->
-    <record id="view_daily_price_search" model="ir.ui.view">
-        <field name="name">daily.price.search</field>
-        <field name="model">daily.price</field>
+    <record id="view_purchase_daily_price_search" model="ir.ui.view">
+        <field name="name">purchase.daily.price.search</field>
+        <field name="model">purchase.daily.price</field>
         <field name="arch" type="xml">
-            <search string="Search Daily Prices">
+            <search string="Search Purchase Daily Prices">
                 <field name="name"/>
                 <field name="product_id"/>
-                <field name="customer_id"/>
+                <field name="supplier_id"/>
                 <field name="date"/>
                 <filter string="Today" name="today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter string="This Week" name="this_week" domain="[('date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 <filter string="This Month" name="this_month" domain="[('date', '>=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
                 <group expand="0" string="Group By">
                     <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Supplier" name="group_supplier" context="{'group_by': 'supplier_id'}"/>
                     <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
                 </group>
             </search>
@@ -80,31 +80,31 @@
     </record>
 
     <!-- Action -->
-    <record id="action_daily_price" model="ir.actions.act_window">
-        <field name="name">Daily Prices</field>
-        <field name="res_model">daily.price</field>
+    <record id="action_purchase_daily_price" model="ir.actions.act_window">
+        <field name="name">Purchase Daily Prices</field>
+        <field name="res_model">purchase.daily.price</field>
         <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_daily_price_search"/>
+        <field name="search_view_id" ref="view_purchase_daily_price_search"/>
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first daily price!
+                Create your first purchase daily price!
             </p>
             <p>
-                Manage daily prices for different product-customer combinations.
-                Set different prices for the same product and customer on different dates.
-                These prices will automatically apply to sale orders.
+                Manage daily prices for different product-supplier combinations.
+                Set different prices for the same product and supplier on different dates.
+                These prices will automatically apply to purchase orders.
             </p>
         </field>
     </record>
 
-    <!-- Action for Creating New Daily Price -->
-    <record id="action_daily_price_create" model="ir.actions.act_window">
-        <field name="name">Create Daily Price</field>
-        <field name="res_model">daily.price</field>
+    <!-- Action for Creating New Purchase Daily Price -->
+    <record id="action_purchase_daily_price_create" model="ir.actions.act_window">
+        <field name="name">Create Purchase Daily Price</field>
+        <field name="res_model">purchase.daily.price</field>
         <field name="view_mode">form</field>
         <field name="target">current</field>
         <field name="context">{}</field>
     </record>
 
-</odoo> 
+</odoo>

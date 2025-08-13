@@ -48,12 +48,14 @@ class DailyPrice(models.Model):
     product_id = fields.Many2one('product.product', string='Product', required=True)
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     date = fields.Date(string='Date', required=True, default=fields.Date.today)
+    unit_price = fields.Float(string='Unit Price', required=True, digits=(10, 2))
+    currency_id = fields.Many2one('res.currency', string='Currency', 
+                                 default=lambda self: self.env.company.currency_id)
     company_id = fields.Many2one('res.company', string='Company', 
                                 default=lambda self: self.env.company)
-    active = fields.Boolean(string='Active', default=True)
     notes = fields.Text(string='Notes')
     
-    # Daily Price Lines
+    # Daily Price Lines (kept for backward compatibility but not used in new simplified view)
     daily_price_line_ids = fields.One2many('daily.price.line', 'daily_price_id', string='Daily Price Lines')
     
     # Computed fields
@@ -61,9 +63,15 @@ class DailyPrice(models.Model):
     
     # Constraints
     _sql_constraints = [
-        ('unique_product_customer', 'unique(product_id, customer_id, active)', 
-         'A daily price record for this product-customer combination already exists!')
+        ('unique_product_customer_date', 'unique(product_id, customer_id, date)', 
+         'A daily price record for this product-customer-date combination already exists!')
     ]
+
+    @api.constrains('unit_price')
+    def _check_unit_price_positive(self):
+        for record in self:
+            if record.unit_price <= 0:
+                raise ValidationError(_('Unit price must be greater than zero.'))
 
     @api.depends('date', 'product_id', 'customer_id')
     def _compute_display_name(self):
@@ -96,42 +104,47 @@ class DailyPrice(models.Model):
             _logger.warning(f"Error removing old constraints: {e}")
 
     @api.model
-    def check_record_exists(self, product_id, customer_id):
-        """Check if a daily price record already exists for this product-customer combination"""
-        return self.search_count([
+    def check_record_exists(self, product_id, customer_id, date=None):
+        """Check if a daily price record already exists for this product-customer-date combination"""
+        domain = [
             ('product_id', '=', product_id),
-            ('customer_id', '=', customer_id),
-            ('active', '=', True)
-        ]) > 0
+            ('customer_id', '=', customer_id)
+        ]
+        if date:
+            domain.append(('date', '=', date))
+        
+        return self.search_count(domain) > 0
 
     @api.model
-    def get_existing_record(self, product_id, customer_id):
-        """Get the existing daily price record for this product-customer combination"""
-        return self.search([
+    def get_existing_record(self, product_id, customer_id, date=None):
+        """Get the existing daily price record for this product-customer-date combination"""
+        domain = [
             ('product_id', '=', product_id),
-            ('customer_id', '=', customer_id),
-            ('active', '=', True)
-        ], limit=1)
+            ('customer_id', '=', customer_id)
+        ]
+        if date:
+            domain.append(('date', '=', date))
+        
+        return self.search(domain, limit=1)
 
     @api.model
     def add_price_line_to_existing(self, product_id, customer_id, date, unit_price, currency_id=None, notes=None):
-        """Add a price line to an existing daily price record"""
-        existing_record = self.get_existing_record(product_id, customer_id)
-        
-        if not existing_record:
-            raise ValidationError(_('No existing daily price record found for this product-customer combination.'))
+        """Create a new daily price record for a specific date"""
+        # Check if record already exists for this date
+        if self.check_record_exists(product_id, customer_id, date):
+            raise ValidationError(_('A daily price record already exists for product "%s", customer "%s" on date "%s"') % (
+                self.env['product.product'].browse(product_id).name,
+                self.env['res.partner'].browse(customer_id).name,
+                date.strftime('%Y-%m-%d')
+            ))
         
         if not currency_id:
             currency_id = self.env.company.currency_id.id
         
-        # Check if price line already exists for this date
-        existing_price_line = existing_record.daily_price_line_ids.filtered(lambda l: l.date == date)
-        if existing_price_line:
-            raise ValidationError(_('A price line already exists for date %s') % date.strftime('%Y-%m-%d'))
-        
-        # Create new price line
-        return self.env['daily.price.line'].create({
-            'daily_price_id': existing_record.id,
+        # Create new daily price record
+        return self.create({
+            'product_id': product_id,
+            'customer_id': customer_id,
             'date': date,
             'unit_price': unit_price,
             'currency_id': currency_id,
@@ -139,22 +152,12 @@ class DailyPrice(models.Model):
         })
 
     def copy(self, default=None):
-        """Override copy to also copy daily price lines"""
+        """Override copy to create a new daily price record"""
         if default is None:
             default = {}
         
         # Copy the daily price
         new_record = super(DailyPrice, self).copy(default)
-        
-        # Copy daily price lines
-        for line in self.daily_price_line_ids:
-            self.env['daily.price.line'].create({
-                'daily_price_id': new_record.id,
-                'date': line.date,
-                'unit_price': line.unit_price,
-                'currency_id': line.currency_id.id,
-                'notes': line.notes,
-            })
         
         return new_record
 
@@ -166,105 +169,86 @@ class DailyPrice(models.Model):
             if record.date and record.date > fields.Date.today() + timedelta(days=365):
                 raise ValidationError(_('Price date cannot be more than 1 year in the future.'))
 
-    @api.constrains('product_id', 'customer_id')
-    def _check_unique_product_customer(self):
+    @api.constrains('product_id', 'customer_id', 'date')
+    def _check_unique_product_customer_date(self):
         for record in self:
-            if record.product_id and record.customer_id:
-                # Check if another record exists with the same product-customer combination
+            if record.product_id and record.customer_id and record.date:
+                # Check if another record exists with the same product-customer-date combination
                 existing_record = self.search([
                     ('product_id', '=', record.product_id.id),
                     ('customer_id', '=', record.customer_id.id),
-                    ('active', '=', True),
+                    ('date', '=', record.date),
                     ('id', '!=', record.id)
                 ], limit=1)
                 
                 if existing_record:
                     raise ValidationError(_(
-                        'A daily price record already exists for product "%s" and customer "%s". '
-                        'Please use the existing record to add price lines for different dates.'
-                    ) % (record.product_id.name, record.customer_id.name))
+                        'A daily price record already exists for product "%s", customer "%s" on date "%s". '
+                        'Please use a different date or modify the existing record.'
+                    ) % (record.product_id.name, record.customer_id.name, record.date.strftime('%Y-%m-%d')))
 
     def get_price_for_date(self, product_id, customer_id, date):
         """Get unit price for a specific product, customer and date"""
-        # Search for the daily price record for this product-customer combination
+        # Search for the daily price record for this product-customer-date combination
         price_record = self.search([
             ('product_id', '=', product_id),
             ('customer_id', '=', customer_id),
-            ('active', '=', True)
+            ('date', '=', date)
         ], limit=1)
         
-        if price_record and price_record.daily_price_line_ids:
-            # Get the price line for this date
-            price_line = price_record.daily_price_line_ids.filtered(lambda l: l.date == date)
-            return price_line.unit_price if price_line else 0.0
+        if price_record:
+            return price_record.unit_price
         
         return 0.0
 
     def get_price_for_date_range(self, product_id, customer_id, start_date, end_date):
         """Get unit prices for a product-customer combination within a date range"""
-        # Search for the daily price record for this product-customer combination
-        price_record = self.search([
+        # Search for daily price records within the date range
+        price_records = self.search([
             ('product_id', '=', product_id),
             ('customer_id', '=', customer_id),
-            ('active', '=', True)
-        ], limit=1)
+            ('date', '>=', start_date),
+            ('date', '<=', end_date)
+        ])
         
-        if price_record and price_record.daily_price_line_ids:
-            # Filter price lines within the date range
-            filtered_lines = price_record.daily_price_line_ids.filtered(
-                lambda l: start_date <= l.date <= end_date
-            )
-            if filtered_lines:
-                return price_record
-        
-        return self.env['daily.price']
+        return price_records
 
     def check_price_exists(self, product_id, customer_id, date):
         """Check if price exists for a specific product, customer and date"""
-        # Search for the daily price record for this product-customer combination
+        # Search for the daily price record for this product-customer-date combination
         price_record = self.search([
             ('product_id', '=', product_id),
             ('customer_id', '=', customer_id),
-            ('active', '=', True)
+            ('date', '=', date)
         ], limit=1)
         
-        if price_record and price_record.daily_price_line_ids:
-            # Check if there's a price line for this specific date
-            price_line = price_record.daily_price_line_ids.filtered(lambda l: l.date == date)
-            return bool(price_line)
-        
-        return False
+        return bool(price_record)
 
     def action_copy_to_next_day(self):
         """Copy this daily price to the next day"""
         next_day = self.date + timedelta(days=1)
         
-        # Get the current price line for today
-        today_price_line = self.daily_price_line_ids.filtered(lambda l: l.date == self.date)
-        
-        # Check if price line already exists for next day
-        existing_price_line = self.daily_price_line_ids.filtered(lambda l: l.date == next_day)
-        
-        if existing_price_line:
+        # Check if record already exists for next day
+        if self.check_record_exists(self.product_id.id, self.customer_id.id, next_day):
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
                     'title': _('Warning'),
-                    'message': _('Daily price line already exists for %s') % next_day.strftime('%Y-%m-%d'),
+                    'message': _('Daily price record already exists for %s') % next_day.strftime('%Y-%m-%d'),
                     'type': 'warning',
                 }
             }
         
-        # Add price line to the existing record
-        if today_price_line:
-            self.env['daily.price.line'].create({
-                'daily_price_id': self.id,
-                'date': next_day,
-                'unit_price': today_price_line.unit_price,
-                'currency_id': today_price_line.currency_id.id,
-                'notes': f'Copied from {self.name}',
-            })
+        # Create new daily price record for next day
+        self.create({
+            'product_id': self.product_id.id,
+            'customer_id': self.customer_id.id,
+            'date': next_day,
+            'unit_price': self.unit_price,
+            'currency_id': self.currency_id.id,
+            'notes': f'Copied from {self.name}',
+        })
         
         return {
             'type': 'ir.actions.client',
@@ -277,29 +261,30 @@ class DailyPrice(models.Model):
         }
 
     def action_add_price_line(self):
-        """Add a new price line"""
+        """Add a new daily price record for a different date"""
         return {
-            'name': _('Add Price Line'),
+            'name': _('Add Daily Price'),
             'type': 'ir.actions.act_window',
-            'res_model': 'daily.price.line',
+            'res_model': 'daily.price',
             'view_mode': 'form',
-            'target': 'new',
+            'target': 'current',
             'context': {
-                'default_daily_price_id': self.id,
-                'default_currency_id': self.env.company.currency_id.id,
+                'default_product_id': self.product_id.id,
+                'default_customer_id': self.customer_id.id,
+                'default_currency_id': self.currency_id.id,
                 'default_date': fields.Date.today(),
             }
         }
 
     def action_view_price_lines(self):
-        """View daily price lines for this daily price"""
+        """View daily price records for this product-customer combination"""
         return {
-            'name': _('Daily Price Lines for %s') % self.name,
+            'name': _('Daily Prices for %s - %s') % (self.product_id.name, self.customer_id.name),
             'type': 'ir.actions.act_window',
-            'res_model': 'daily.price.line',
+            'res_model': 'daily.price',
             'view_mode': 'list,form',
-            'domain': [('daily_price_id', '=', self.id)],
-            'context': {'default_daily_price_id': self.id},
+            'domain': [('product_id', '=', self.product_id.id), ('customer_id', '=', self.customer_id.id)],
+            'context': {'default_product_id': self.product_id.id, 'default_customer_id': self.customer_id.id},
         }
 
     def action_create_new(self):
@@ -314,13 +299,13 @@ class DailyPrice(models.Model):
         }
 
     @api.model
-    def action_create_or_open(self, product_id=None, customer_id=None):
+    def action_create_or_open(self, product_id=None, customer_id=None, date=None):
         """Create new daily price record or open existing one if it exists"""
-        if product_id and customer_id:
-            existing_record = self.get_existing_record(product_id, customer_id)
+        if product_id and customer_id and date:
+            existing_record = self.get_existing_record(product_id, customer_id, date)
             if existing_record:
                 return {
-                    'name': _('Daily Price - %s - %s') % (existing_record.product_id.name, existing_record.customer_id.name),
+                    'name': _('Daily Price - %s - %s - %s') % (existing_record.product_id.name, existing_record.customer_id.name, existing_record.date.strftime('%Y-%m-%d')),
                     'type': 'ir.actions.act_window',
                     'res_model': 'daily.price',
                     'view_mode': 'form',
@@ -331,30 +316,30 @@ class DailyPrice(models.Model):
         return self.action_create_new()
 
     @api.model
-    def validate_before_create(self, product_id, customer_id):
-        """Validate if a new record can be created for this product-customer combination"""
-        if self.check_record_exists(product_id, customer_id):
-            existing_record = self.get_existing_record(product_id, customer_id)
+    def validate_before_create(self, product_id, customer_id, date):
+        """Validate if a new record can be created for this product-customer-date combination"""
+        if self.check_record_exists(product_id, customer_id, date):
+            existing_record = self.get_existing_record(product_id, customer_id, date)
             raise ValidationError(_(
-                'A daily price record already exists for product "%s" and customer "%s". '
-                'Please use the existing record (ID: %s) to add price lines for different dates.'
-            ) % (existing_record.product_id.name, existing_record.customer_id.name, existing_record.id))
+                'A daily price record already exists for product "%s", customer "%s" on date "%s". '
+                'Please use a different date or modify the existing record (ID: %s).'
+            ) % (existing_record.product_id.name, existing_record.customer_id.name, existing_record.date.strftime('%Y-%m-%d'), existing_record.id))
         
         return True
 
-    @api.onchange('product_id', 'customer_id')
-    def _onchange_product_customer_check_existing(self):
-        """Check if a record already exists for this product-customer combination"""
-        if self.product_id and self.customer_id:
-            existing_record = self.get_existing_record(self.product_id.id, self.customer_id.id)
+    @api.onchange('product_id', 'customer_id', 'date')
+    def _onchange_product_customer_date_check_existing(self):
+        """Check if a record already exists for this product-customer-date combination"""
+        if self.product_id and self.customer_id and self.date:
+            existing_record = self.get_existing_record(self.product_id.id, self.customer_id.id, self.date)
             if existing_record:
                 return {
                     'warning': {
                         'title': _('Record Already Exists'),
                         'message': _(
-                            'A daily price record already exists for product "%s" and customer "%s". '
-                            'Please use the existing record to add price lines for different dates.'
-                        ) % (self.product_id.name, self.customer_id.name)
+                            'A daily price record already exists for product "%s", customer "%s" on date "%s". '
+                            'Please use a different date or modify the existing record.'
+                        ) % (self.product_id.name, self.customer_id.name, self.date.strftime('%Y-%m-%d'))
                     }
                 }
 
@@ -392,15 +377,15 @@ class ProductProduct(models.Model):
             'context': {'default_product_id': self.id},
         }
 
-    def check_daily_price_record_exists(self, customer_id):
-        """Check if a daily price record exists for this product and customer"""
+    def check_daily_price_record_exists(self, customer_id, date=None):
+        """Check if a daily price record exists for this product, customer and date"""
         self.ensure_one()
-        return self.env['daily.price'].check_record_exists(self.id, customer_id)
+        return self.env['daily.price'].check_record_exists(self.id, customer_id, date)
 
-    def get_existing_daily_price_record(self, customer_id):
-        """Get the existing daily price record for this product and customer"""
+    def get_existing_daily_price_record(self, customer_id, date=None):
+        """Get the existing daily price record for this product, customer and date"""
         self.ensure_one()
-        return self.env['daily.price'].get_existing_record(self.id, customer_id)
+        return self.env['daily.price'].get_existing_record(self.id, customer_id, date)
 
 
 class SaleOrderLine(models.Model):
@@ -465,12 +450,12 @@ class ResPartner(models.Model):
         self.ensure_one()
         return self.env['daily.price'].get_price_for_date(product_id, self.id, date)
 
-    def check_daily_price_record_exists(self, product_id):
-        """Check if a daily price record exists for this customer and product"""
+    def check_daily_price_record_exists(self, product_id, date=None):
+        """Check if a daily price record exists for this customer, product and date"""
         self.ensure_one()
-        return self.env['daily.price'].check_record_exists(product_id, self.id)
+        return self.env['daily.price'].check_record_exists(product_id, self.id, date)
 
-    def get_existing_daily_price_record(self, product_id):
-        """Get the existing daily price record for this customer and product"""
+    def get_existing_daily_price_record(self, product_id, date=None):
+        """Get the existing daily price record for this customer, product and date"""
         self.ensure_one()
-        return self.env['daily.price'].get_existing_record(product_id, self.id) 
+        return self.env['daily.price'].get_existing_record(product_id, self.id, date) 

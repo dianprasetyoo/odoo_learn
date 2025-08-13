@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- FFB Purchase Orders Menu - Will appear under Vendors in main Purchase menu -->
+    <menuitem id="ffb_purchase_orders_menu"
+              name="FFB Purchase Orders"
+              parent="purchase.menu_procurement_management"
+              sequence="10"/>
+    
+    <menuitem id="menu_purchase_daily_price_list"
+              name="Daily Prices"
+              parent="purchase.menu_purchase_products"
+              action="action_purchase_daily_price"
+              sequence="40"/>
+</odoo>

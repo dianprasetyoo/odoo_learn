@@ -1,5 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_daily_price_user,daily.price.user,model_daily_price,sales_team.group_sale_salesman,1,1,1,0
 access_daily_price_manager,daily.price.manager,model_daily_price,sales_team.group_sale_manager,1,1,1,1
-access_daily_price_line_user,daily.price.line.user,model_daily_price_line,sales_team.group_sale_salesman,1,1,1,0
-access_daily_price_line_manager,daily.price.line.manager,model_daily_price_line,sales_team.group_sale_manager,1,1,1,1

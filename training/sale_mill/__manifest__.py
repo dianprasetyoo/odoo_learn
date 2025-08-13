@@ -7,27 +7,28 @@
         This module provides comprehensive mill management functionality within the Sales module.
         
         Features include:
-        - Daily price management per product-customer combination
-        - Notebook-style interface for better organization
-        - Bulk creation of daily prices for date ranges
+        - Daily price management per product-customer-date combination
+        - Simple and intuitive interface for daily price input
         - Automatic integration with sales orders
+        - Automatic integration with purchase orders
         - Validation to ensure daily prices exist for order dates
         - Copy daily prices to next day functionality
-        - Archive/unarchive daily prices
-        - Product and customer integration with daily price visibility
+        - Product and customer/supplier integration with daily price visibility
         - Advanced search and filtering capabilities
         
         The module ensures that products with daily pricing have valid prices set for specific dates,
-        and automatically applies these prices when creating sale orders.
+        and automatically applies these prices when creating sales and purchase orders.
     """,
     'author': 'Tyo',
     'depends': [
         'base',
         'sale',
         'sale_management',
+        'purchase',
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/record_rules.xml',
         'data/ir_sequence_data.xml',
         'views/daily_price_views.xml',
         'views/menu_views.xml',
