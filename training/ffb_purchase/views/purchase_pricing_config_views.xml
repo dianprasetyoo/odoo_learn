@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Purchase Pricing Configuration List View -->
+    <record id="view_purchase_pricing_config_list" model="ir.ui.view">
+        <field name="name">purchase.pricing.config.list</field>
+        <field name="model">purchase.pricing.config</field>
+        <field name="arch" type="xml">
+            <list string="Purchase Pricing Configurations">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="vendor_id"/>
+                <field name="pricing_method"/>
+                <field name="purchase_margin"/>
+                <field name="date_range_days"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Purchase Pricing Configuration Form View -->
+    <record id="view_purchase_pricing_config_form" model="ir.ui.view">
+        <field name="name">purchase.pricing.config.form</field>
+        <field name="model">purchase.pricing.config</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Pricing Configuration">
+                <header>
+                    <button name="action_open_sale_orders" type="object" 
+                            string="📊 View Sale Orders" class="btn-link"
+                            help="Open sale orders for this product"/>
+                </header>
+                <sheet>
+                    
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
+                    
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Configuration Name"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group name="product_vendor" string="Product &amp; Vendor">
+                            <field name="product_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="vendor_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group name="pricing_config" string="Pricing Configuration">
+                            <field name="pricing_method"/>
+                            <field name="purchase_margin"/>
+                            <field name="date_range_days"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Price Calculation Test" name="price_test">
+                            <group>
+                                <group string="Current Configuration">
+                                    <field name="pricing_method" readonly="1"/>
+                                    <field name="purchase_margin" readonly="1"/>
+                                    <field name="date_range_days" readonly="1"/>
+                                </group>
+                                <group string="Calculation Results">
+                                    <field name="test_status_message" readonly="1"/>
+                                    <field name="test_price_count" readonly="1"/>
+                                    <field name="test_base_price" widget="monetary" readonly="1"/>
+                                    <field name="test_margin_amount" widget="monetary" readonly="1"/>
+                                    <field name="test_final_price" widget="monetary" readonly="1"/>
+                                </group>
+                            </group>
+                            
+                            <group string="Actions">
+                                <button name="action_view_calculation_details" type="object" 
+                                       string="📋 View Calculation Details" class="btn-primary"
+                                       help="Show detailed calculation breakdown"
+                                       invisible="test_price_count == 0"/>
+                            </group>
+                            <div class="alert alert-info" role="alert">
+                                <strong>💡 How Price Calculation Works:</strong>
+                                <br/>• System searches for confirmed sale orders (all customers) for the same product
+                                <br/>• Calculates either minimum or average price from sale order lines
+                                <br/>• Applies the specified purchase margin percentage
+                                <br/>• Final result becomes the suggested purchase price
+                                <br/>
+                                <br/><strong>📊 Sample Calculation:</strong>
+                                <br/>• If sale order prices: 10,000 | 12,000 | 11,000
+                                <br/>• Min method: 10,000 - 10% = 9,000 (purchase price)
+                                <br/>• Avg method: 11,000 - 10% = 9,900 (purchase price)
+                            </div>
+                            
+                            <div class="alert alert-warning" role="alert" invisible="product_id">
+                                <strong>⚠️ Setup Required:</strong> Please select a product and vendor first to test price calculation.
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Purchase Pricing Configuration Search View -->
+    <record id="view_purchase_pricing_config_search" model="ir.ui.view">
+        <field name="name">purchase.pricing.config.search</field>
+        <field name="model">purchase.pricing.config</field>
+        <field name="arch" type="xml">
+            <search string="Purchase Pricing Configurations">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="vendor_id"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Minimum Price Method" name="min_price" domain="[('pricing_method', '=', 'min_price')]"/>
+                <filter string="Average Price Method" name="avg_price" domain="[('pricing_method', '=', 'avg_price')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="Vendor" name="group_vendor" context="{'group_by': 'vendor_id'}"/>
+                    <filter string="Pricing Method" name="group_method" context="{'group_by': 'pricing_method'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Purchase Pricing Configuration Action -->
+    <record id="action_purchase_pricing_config" model="ir.actions.act_window">
+        <field name="name">Purchase Pricing Configurations</field>
+        <field name="res_model">purchase.pricing.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_purchase_pricing_config_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Purchase Pricing Configuration!
+            </p>
+            <p>
+                Configure automatic pricing for purchase orders based on sale prices.
+                You can set different discount percentages and pricing methods (min/avg) for each product-vendor combination.
+            </p>
+        </field>
+    </record>
+</odoo>

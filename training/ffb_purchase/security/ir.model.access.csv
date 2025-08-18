@@ -3,5 +3,9 @@ access_ffb_purchase_order_user,ffb.purchase.order.user,model_purchase_order,purc
 access_ffb_purchase_order_manager,ffb.purchase.order.manager,model_purchase_order,purchase.group_purchase_manager,1,1,1,1
 access_ffb_purchase_order_line_user,ffb.purchase.order.line.user,model_purchase_order_line,purchase.group_purchase_user,1,1,1,0
 access_ffb_purchase_order_line_manager,ffb.purchase.order.line.manager,model_purchase_order_line,purchase.group_purchase_manager,1,1,1,1
-access_purchase_daily_price_user,purchase.daily.price.user,model_purchase_daily_price,purchase.group_purchase_user,1,1,1,0
-access_purchase_daily_price_manager,purchase.daily.price.manager,model_purchase_daily_price,purchase.group_purchase_manager,1,1,1,1
+access_purchase_pricing_config_user,purchase.pricing.config.user,model_purchase_pricing_config,purchase.group_purchase_user,1,1,1,0
+access_purchase_pricing_config_manager,purchase.pricing.config.manager,model_purchase_pricing_config,purchase.group_purchase_manager,1,1,1,1
+access_wizard_calculation_details_user,wizard.calculation.details.user,model_wizard_calculation_details,purchase.group_purchase_user,1,1,1,1
+access_wizard_calculation_details_manager,wizard.calculation.details.manager,model_wizard_calculation_details,purchase.group_purchase_manager,1,1,1,1
+access_wizard_calculation_details_line_user,wizard.calculation.details.line.user,model_wizard_calculation_details_line,purchase.group_purchase_user,1,1,1,1
+access_wizard_calculation_details_line_manager,wizard.calculation.details.line.manager,model_wizard_calculation_details_line,purchase.group_purchase_manager,1,1,1,1

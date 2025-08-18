@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Purchase Order Form View Extension -->
+    <record id="view_purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add pricing configuration fields -->
+            <field name="currency_id" position="after">
+                <field name="use_pricing_config"/>
+                <field name="pricing_date_from" invisible="not use_pricing_config"/>
+                <field name="pricing_date_to" invisible="not use_pricing_config"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Purchase Order Line List View for Pricing Information -->
+    <record id="view_purchase_order_line_list_pricing" model="ir.ui.view">
+        <field name="name">purchase.order.line.list.pricing</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <list string="Purchase Order Lines">
+                <field name="product_id"/>
+                <field name="name"/>
+                <field name="product_qty"/>
+                <field name="product_uom"/>
+                <field name="price_unit"/>
+                <field name="pricing_status" optional="show"/>
+                <field name="pricing_config_available" widget="boolean_toggle" optional="hide"/>
+                <field name="pricing_config_id" optional="hide"/>
+                <field name="base_sale_price" optional="hide"/>
+                <field name="margin_amount" optional="hide"/>
+                <field name="price_subtotal"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Purchase Order Line Form View for Pricing Information -->
+    <record id="view_purchase_order_line_form_pricing" model="ir.ui.view">
+        <field name="name">purchase.order.line.form.pricing</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Order Line">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom"/>
+                            <field name="price_unit"/>
+                            <field name="price_subtotal"/>
+                        </group>
+                        <group>
+                            <field name="pricing_status"/>
+                            <field name="pricing_config_available" invisible="1"/>
+                            <field name="pricing_config_id" readonly="1" invisible="not pricing_config_available"/>
+                            <field name="base_sale_price" readonly="1" invisible="not pricing_config_available"/>
+                            <field name="margin_amount" readonly="1" invisible="not pricing_config_available"/>
+                        </group>
+                    </group>
+                    <group string="Pricing Information" invisible="not pricing_config_available">
+                        <field name="price_calculation_info" readonly="1" widget="text" nolabel="1"/>
+                        <div>
+                            <button name="action_view_pricing_details" type="object" 
+                                    string="View Details" class="btn-link"/>
+                            <button name="action_recalculate_price" type="object" 
+                                    string="Recalculate" class="btn-link"/>
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

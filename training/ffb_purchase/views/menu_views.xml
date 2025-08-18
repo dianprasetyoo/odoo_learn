@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- FFB Purchase Orders Menu - Will appear under Vendors in main Purchase menu -->
-    <menuitem id="ffb_purchase_orders_menu"
-              name="FFB Purchase Orders"
-              parent="purchase.menu_procurement_management"
-              sequence="10"/>
+    <!-- Main menu for FFB Purchase -->
+    <!-- <menuitem id="menu_ffb_purchase_root" name="FFB Purchase" 
+              parent="purchase.menu_purchase_root" sequence="10"/> -->
     
-    <menuitem id="menu_purchase_daily_price_list"
-              name="Daily Prices"
-              parent="purchase.menu_purchase_products"
-              action="action_purchase_daily_price"
-              sequence="40"/>
+    <!-- Purchase Orders submenu -->
+    <!-- <menuitem id="menu_ffb_purchase_orders" name="Purchase Orders" 
+              parent="menu_ffb_purchase_root" action="purchase.purchase_rfq" sequence="10"/> -->
+    
+    <!-- Purchase Pricing Configuration -->
+    <menuitem id="menu_purchase_pricing_config" name="Purchase Pricing" 
+              parent="purchase.menu_product_in_config_purchase" action="action_purchase_pricing_config" sequence="10"/>
+
+    <!-- Action for Purchase Order Lines with Pricing -->
+    <record id="action_purchase_order_line_pricing" model="ir.actions.act_window">
+        <field name="name">Purchase Order Lines</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                                      (0, 0, {'view_mode': 'list', 'view_id': ref('view_purchase_order_line_list_pricing')}),
+                                      (0, 0, {'view_mode': 'form', 'view_id': ref('view_purchase_order_line_form_pricing')})]"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No purchase order lines found.
+            </p>
+            <p>
+                This view shows purchase order lines with automatic pricing information.
+            </p>
+        </field>
+    </record>
+
+    <!-- Purchase Order Lines submenu -->
+    <!-- <menuitem id="menu_purchase_order_lines_pricing" name="Order Lines with Pricing" 
+              parent="menu_ffb_purchase_root" action="action_purchase_order_line_pricing" sequence="20"/> -->
 </odoo>
