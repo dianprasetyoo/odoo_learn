@@ -1,0 +1,15 @@
+name: Echo Testing Different Branch
+on:
+  workflow_dispatch:
+  
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    name: testing
+    steps:
+      - name: fancy-echo
+        uses: logesh-kumar/fancy-echo@v1.2.0
+        with:
+          who-to-greet: 'Cayadi'
+
+  
